@@ -3,7 +3,7 @@ const config = {
     ? 'https://nexus-edu-sigma.vercel.app'
     : 'http://localhost:5000',
   FRONTEND_URL: process.env.NODE_ENV === 'production'
-    ? 'https://nexusedu-jade.vercel.app'
+    ? 'https://nexuseduc.vercel.app'
     : 'http://localhost:3000'
 };
 
