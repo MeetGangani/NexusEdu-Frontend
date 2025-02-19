@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nexusedu-jade.vercel.app/sitemap.xml
