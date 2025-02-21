@@ -13,23 +13,21 @@ const HomeScreen = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Check for login success and userInfo cookie
+    // Check for login success and token in URL
     const searchParams = new URLSearchParams(location.search);
     const loginSuccess = searchParams.get('loginSuccess');
+    const token = searchParams.get('token');
     
-    if (loginSuccess === 'true') {
-      // Get userInfo from cookie
-      const userInfoCookie = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('userInfo='));
-      
-      if (userInfoCookie) {
-        const userInfoData = JSON.parse(decodeURIComponent(userInfoCookie.split('=')[1]));
+    if (loginSuccess === 'true' && token) {
+      // Get userInfo from localStorage
+      const userInfoData = JSON.parse(localStorage.getItem('userInfo') || '{}');
+      if (userInfoData) {
+        // Store token
+        localStorage.setItem('token', token);
         dispatch(setCredentials(userInfoData));
-        
-        // Clean up the URL
-        window.history.replaceState({}, document.title, '/');
       }
+      // Clean up the URL
+      window.history.replaceState({}, document.title, '/');
     }
   }, [dispatch, location]);
 

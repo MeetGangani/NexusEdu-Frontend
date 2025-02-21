@@ -29,23 +29,20 @@ const Header = () => {
 
   const logoutHandler = async () => {
     try {
-      const response = await logoutApiCall().unwrap();
-      if (response.success) {
-        // Clear all auth-related data
-        clearAuthCookies();
-        dispatch(logout());
-        
-        // Force a page reload to clear any cached state
-        window.location.href = '/login';
-      }
-    } catch (err) {
-      console.error('Logout failed:', err);
-      // Attempt to logout anyway
-      clearAuthCookies();
+      await logoutApiCall().unwrap();
+      // Clear localStorage instead of cookies
+      localStorage.removeItem('userInfo');
+      localStorage.removeItem('token');
       dispatch(logout());
       window.location.href = '/login';
-    
-    } 
+    } catch (err) {
+      console.error('Logout failed:', err);
+      // Clear localStorage anyway
+      localStorage.removeItem('userInfo');
+      localStorage.removeItem('token');
+      dispatch(logout());
+      window.location.href = '/login';
+    }
   };
 
   // Generate avatar using DiceBear API

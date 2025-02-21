@@ -6,17 +6,14 @@ import { logout } from './authSlice';
 export const baseUrl = 'https://nexus-edu-sigma.vercel.app';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.REACT_APP_API_URL || 'https://nexus-edu-sigma.vercel.app',
-  credentials: 'include',
-  prepareHeaders: (headers, { getState }) => {
-    const token = getState()?.auth?.userInfo?.token;
+  baseUrl: process.env.REACT_APP_API_URL,
+  prepareHeaders: (headers) => {
+    const token = localStorage.getItem('token');
     if (token) {
       headers.set('authorization', `Bearer ${token}`);
     }
-    headers.set('Accept', 'application/json');
-    // Don't set X-Forwarded-Proto header, let the server handle HTTPS
     return headers;
-  }
+  },
 });
 
 // Create a custom base query with error handling and auth checks
