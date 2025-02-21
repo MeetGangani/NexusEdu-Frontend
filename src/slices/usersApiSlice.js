@@ -1,9 +1,9 @@
-import { apiSlice } from './apiSlice';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import config from '../config/config.js';
 
-const USERS_URL = '/api/users';
-
-export const usersApiSlice = apiSlice.injectEndpoints({
+const usersApiSlice = createApi({
+  reducerPath: 'usersApi',
+  baseQuery: fetchBaseQuery({ baseUrl: `${config.API_BASE_URL}/api` }),
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data) => ({
@@ -21,16 +21,15 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     register: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}`,
+      query: (userData) => ({
+        url: '/users',
         method: 'POST',
-        body: data,
-        credentials: 'include'
+        body: userData,
       }),
     }),
     updateUser: builder.mutation({
       query: (data) => ({
-        url: `${USERS_URL}/profile`,
+        url: '/api/users/profile',
         method: 'PUT',
         body: data,
         credentials: 'include'
@@ -38,7 +37,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     }),
     googleAuth: builder.mutation({
       query: () => ({
-        url: `${USERS_URL}/auth/google`,
+        url: '/api/users/auth/google',
         method: 'GET',
         credentials: 'include'
       }),
@@ -61,3 +60,5 @@ export const {
   useGoogleAuthMutation,
   useCheckAuthQuery,
 } = usersApiSlice;
+
+export default usersApiSlice.reducer;
