@@ -45,22 +45,27 @@ const RegisterScreen = () => {
   }, [navigate, userInfo]);
 
   useEffect(() => {
-    // Check for successful Google OAuth login
-    const params = new URLSearchParams(location.search);
-    const loginSuccess = params.get('loginSuccess');
-    const error = params.get('error');
-
-    if (loginSuccess === 'true') {
-      showToast.success('Login successful');
-      // Redirect to appropriate dashboard based on user type
-      if (userInfo) {
-        const dashboardPath = getDashboardPath(userInfo.userType);
-        navigate(dashboardPath);
+    // Check for login success and token in URL
+    const searchParams = new URLSearchParams(window.location.search);
+    const loginSuccess = searchParams.get('loginSuccess');
+    const token = searchParams.get('token');
+    
+    if (loginSuccess === 'true' && token) {
+      // Get userInfo from localStorage
+      const userInfoData = JSON.parse(localStorage.getItem('userInfo') || '{}');
+      if (userInfoData) {
+        // Store token and update credentials
+        localStorage.setItem('token', token);
+        dispatch(setCredentials({ ...userInfoData, token }));
+        
+        // Redirect to appropriate dashboard
+        const redirectPath = getDashboardPath(userInfoData.userType);
+        navigate(redirectPath);
       }
-    } else if (error) {
-      showToast.error(decodeURIComponent(error));
+      // Clean up the URL
+      window.history.replaceState({}, document.title, '/');
     }
-  }, [location, userInfo, navigate]);
+  }, [dispatch, navigate]);
 
   const getDashboardPath = (userType) => {
     switch (userType) {
@@ -134,14 +139,12 @@ const RegisterScreen = () => {
   };
 
   const handleGoogleSignIn = () => {
+    const redirectUri = process.env.NODE_ENV === 'production'
+      ? 'https://nexuseduc.vercel.app/register'
+      : 'http://localhost:3000/register';
+
     const authUrl = `${config.API_BASE_URL}/api/users/auth/google`;
-    // Ensure HTTPS in production and correct redirect
-    if (process.env.NODE_ENV === 'production') {
-      const redirectUrl = `${config.FRONTEND_URL}/register`;
-      window.location.href = `${authUrl}?redirect_uri=${encodeURIComponent(redirectUrl)}`;
-    } else {
-      window.location.href = authUrl;
-    }
+    window.location.href = `${authUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
   };
 
   return (

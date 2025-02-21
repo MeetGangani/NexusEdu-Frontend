@@ -25,11 +25,27 @@ const LoginScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (userInfo && !isLoading) {
-      const redirectPath = getRedirectPath(userInfo.userType);
-      navigate(redirectPath);
+    // Check for login success and token in URL
+    const searchParams = new URLSearchParams(window.location.search);
+    const loginSuccess = searchParams.get('loginSuccess');
+    const token = searchParams.get('token');
+    
+    if (loginSuccess === 'true' && token) {
+      // Get userInfo from localStorage
+      const userInfoData = JSON.parse(localStorage.getItem('userInfo') || '{}');
+      if (userInfoData) {
+        // Store token and update credentials
+        localStorage.setItem('token', token);
+        dispatch(setCredentials({ ...userInfoData, token }));
+        
+        // Redirect to appropriate dashboard
+        const redirectPath = getRedirectPath(userInfoData.userType);
+        navigate(redirectPath);
+      }
+      // Clean up the URL
+      window.history.replaceState({}, document.title, '/');
     }
-  }, [navigate, userInfo, isLoading]);
+  }, [dispatch, navigate]);
 
   const getRedirectPath = (userType) => {
     switch (userType) {
@@ -57,10 +73,12 @@ const LoginScreen = () => {
   };
 
   const handleGoogleSignIn = () => {
-    const authUrl = process.env.NODE_ENV === 'production'
-      ? 'https://nexus-edu-sigma.vercel.app/api/users/auth/google'
-      : 'http://localhost:5000/api/users/auth/google';
-    window.location.href = authUrl;
+    const redirectUri = process.env.NODE_ENV === 'production'
+      ? 'https://nexuseduc.vercel.app/login'
+      : 'http://localhost:3000/login';
+
+    const authUrl = `${config.API_BASE_URL}/api/users/auth/google`;
+    window.location.href = `${authUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
   };
 
   return (

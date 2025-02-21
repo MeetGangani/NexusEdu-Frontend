@@ -9,7 +9,19 @@ export const setAuthData = (userInfo, token) => {
 };
 
 export const getAuthData = () => {
-  const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
-  const token = localStorage.getItem('token');
-  return { userInfo, token };
+  try {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    const token = localStorage.getItem('token');
+    return { userInfo, token };
+  } catch (error) {
+    clearAuthStorage();
+    return { userInfo: null, token: null };
+  }
+};
+
+export const updateAuthData = (updates) => {
+  const currentData = getAuthData();
+  const updatedUserInfo = { ...currentData.userInfo, ...updates };
+  localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+  return updatedUserInfo;
 }; 
