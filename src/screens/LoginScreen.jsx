@@ -25,25 +25,32 @@ const LoginScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    // Check for login success and token in URL
     const searchParams = new URLSearchParams(window.location.search);
     const loginSuccess = searchParams.get('loginSuccess');
     const token = searchParams.get('token');
     
     if (loginSuccess === 'true' && token) {
-      // Get userInfo from localStorage
-      const userInfoData = JSON.parse(localStorage.getItem('userInfo') || '{}');
-      if (userInfoData) {
-        // Store token and update credentials
-        localStorage.setItem('token', token);
-        dispatch(setCredentials({ ...userInfoData, token }));
-        
-        // Redirect to appropriate dashboard
-        const redirectPath = getRedirectPath(userInfoData.userType);
-        navigate(redirectPath);
-      }
-      // Clean up the URL
-      window.history.replaceState({}, document.title, '/');
+      // Store token
+      localStorage.setItem('token', token);
+      
+      // Fetch user data using the token
+      fetch(`${config.API_BASE_URL}/api/users/profile`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      .then(res => res.json())
+      .then(userData => {
+        dispatch(setCredentials({ ...userData, token }));
+        navigate('/');
+      })
+      .catch(err => {
+        console.error('Error fetching user data:', err);
+        showToast.error('Authentication failed');
+      });
+
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [dispatch, navigate]);
 
@@ -74,11 +81,10 @@ const LoginScreen = () => {
 
   const handleGoogleSignIn = () => {
     const redirectUri = process.env.NODE_ENV === 'production'
-      ? 'https://nexuseduc.vercel.app/login'
-      : 'http://localhost:3000/login';
+      ? 'https://nexuseduc.vercel.app'  // Remove /login
+      : 'http://localhost:3000';
 
-    const authUrl = `${config.API_BASE_URL}/api/users/auth/google`;
-    window.location.href = `${authUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
+    window.location.href = `${config.API_BASE_URL}/api/users/auth/google?redirect_uri=${encodeURIComponent(redirectUri)}`;
   };
 
   return (
