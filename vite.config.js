@@ -11,14 +11,14 @@ export default defineConfig({
     },
   },
   server: {
+    port: 3000,
     proxy: {
       '/api': {
-        target: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+        target: process.env.VITE_API_URL || 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       },
     },
-    port: 3000,
   },
   build: {
     outDir: 'dist',
@@ -35,6 +35,7 @@ export default defineConfig({
   },
   define: {
     'import.meta.env..NODE_ENV': JSON.stringify(import.meta.env.NODE_ENV),
+    'process.env': {}
   },
   css: {
     postcss: './postcss.config.cjs',
