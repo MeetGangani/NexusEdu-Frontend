@@ -11,7 +11,7 @@ export const clearAuthCookies = () => {
       // Clear cookie for all paths and domains
       document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;${domain ? ` domain=${domain};` : ''}`;
       
-      if (process.env.NODE_ENV === 'production') {
+      if (import.meta.env.NODE_ENV === 'production') {
         document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain}; secure; samesite=none;`;
       }
     });

@@ -139,8 +139,8 @@ const RegisterScreen = () => {
   };
 
   const handleGoogleSignIn = () => {
-    const redirectUri = process.env.NODE_ENV === 'production'
-      ? 'https://nexuseduc.vercel.app/register'
+    const redirectUri = import.meta.env.NODE_ENV === 'production'
+      ? 'https://nexuseduc.vercel.app/api/users/'
       : 'http://localhost:3000/register';
 
     const authUrl = `${config.API_BASE_URL}/api/users/auth/google`;

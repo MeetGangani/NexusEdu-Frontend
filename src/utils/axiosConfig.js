@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https://nexus-edu-sigma.vercel.app',
+  baseURL: import.meta.env.REACT_APP_API_URL || 'https://nexus-edu-sigma.vercel.app',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json'

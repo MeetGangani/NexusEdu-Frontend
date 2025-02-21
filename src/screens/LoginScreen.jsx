@@ -80,7 +80,7 @@ const LoginScreen = () => {
   };
 
   const handleGoogleSignIn = () => {
-    const redirectUri = process.env.NODE_ENV === 'production'
+    const redirectUri = import.meta.env.NODE_ENV === 'production'
       ? 'https://nexuseduc.vercel.app'  // Remove /login
       : 'http://localhost:3000';
 

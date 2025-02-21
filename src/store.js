@@ -24,7 +24,7 @@ const store = configureStore({
         ignoredActions: ['persist/PERSIST'],
       },
     }).concat([apiSlice.middleware, authMiddleware]),
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: import.meta.env.NODE_ENV !== 'production',
   preloadedState: {
     auth: {
       userInfo: localStorage.getItem('userInfo')

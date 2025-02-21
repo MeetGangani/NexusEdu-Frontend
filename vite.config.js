@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'http://localhost:5000',
+        target: import.meta.env.VITE_API_URL || 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       },
@@ -34,7 +34,7 @@ export default defineConfig({
     },
   },
   define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    'import.meta.env..NODE_ENV': JSON.stringify(import.meta.env.NODE_ENV),
   },
   css: {
     postcss: './postcss.config.cjs',
