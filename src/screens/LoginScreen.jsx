@@ -80,10 +80,7 @@ const LoginScreen = () => {
   };
 
   const handleGoogleSignIn = () => {
-    const redirectUri = import.meta.env.NODE_ENV === 'production'
-      ? 'https://nexuseduc.vercel.app'  // Remove /login
-      : 'http://localhost:3000';
-
+    const redirectUri = `${config.FRONTEND_URL}/login`;
     window.location.href = `${config.API_BASE_URL}/api/users/auth/google?redirect_uri=${encodeURIComponent(redirectUri)}`;
   };
 

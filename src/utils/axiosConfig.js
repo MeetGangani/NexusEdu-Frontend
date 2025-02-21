@@ -1,7 +1,8 @@
 import axios from 'axios';
+import config from '../config/config.js';
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.REACT_APP_API_URL || 'https://nexus-edu-sigma.vercel.app',
+  baseURL: config.API_BASE_URL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
@@ -11,7 +12,7 @@ const axiosInstance = axios.create({
 // Add request interceptor to add auth token
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('userToken'); // or however you store your token
+    const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
