@@ -7,7 +7,7 @@ const usersApiSlice = createApi({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data) => ({
-        url: '/api/users/auth',
+        url: '/users/auth',
         method: 'POST',
         body: data,
         credentials: 'include'
@@ -44,7 +44,7 @@ const usersApiSlice = createApi({
     }),
     checkAuth: builder.query({
       query: () => ({
-        url: '/api/users/check-auth',
+        url: '/users/check-auth',
         method: 'GET',
         credentials: 'include'
       }),
